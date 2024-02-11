@@ -1,9 +1,10 @@
 import sys
 
-from main_window import MainWindow
+from widgets.main_window import MainWindow
 from variables import WINDOW_ICON_PATH
-from display import Display
-from info import Info
+from widgets.display import Display
+from widgets.info import Info
+from widgets.styles import setupTheme
 
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (QApplication)
@@ -12,6 +13,7 @@ from PySide6.QtWidgets import (QApplication)
 if __name__ == '__main__':
     # Cria a aplicação
     app = QApplication(sys.argv)
+    setupTheme()
     window = MainWindow()
 
     # Info
