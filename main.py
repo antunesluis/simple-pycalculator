@@ -6,7 +6,7 @@ from widgets.main_window import MainWindow
 from widgets.display import Display
 from widgets.info import Info
 from widgets.styles import setupTheme
-from widgets.buttons import Button, ButtonsGrid
+from widgets.buttons import ButtonsGrid
 
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (QApplication)
@@ -19,7 +19,7 @@ if __name__ == '__main__':
     window = MainWindow()
 
     # Info
-    info = Info('25.53 ^ 43.6 = 2345.43')
+    info = Info('Sua conta')
     window.addWidgetToVLayout(info)
 
     # Define o ícone
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     window.addWidgetToVLayout(display)
 
     # Grid
-    buttonsGrid = ButtonsGrid()
+    buttonsGrid = ButtonsGrid(display, info)
     window.vLayout.addLayout(buttonsGrid)
 
     # Executa tudo
