@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from PySide6.QtCore import Slot
 from PySide6.QtWidgets import QGridLayout, QPushButton
 
-from utils import isEmpty, isNumOrDot, isValidNumber
+from utils import isEmpty, isNumOrDot, isValidNumber, convertToNumber
 from variables import MEDIUM_FONT_SIZE
 
 if TYPE_CHECKING:
@@ -61,7 +61,7 @@ class ButtonsGrid(QGridLayout):
 
     def _makeGrid(self):
         self.display.eqPressed.connect(self._eq)
-        self.display.delPressed.connect(self.display.backspace)
+        self.display.delPressed.connect(self._backspace)
         self.display.clearPressed.connect(self._clear)
         self.display.inputPressed.connect(self._insertToDisplay)
         self.display.operatorPressed.connect(self._configLeftOp)
@@ -93,10 +93,23 @@ class ButtonsGrid(QGridLayout):
         if text == "=":
             self._connectButtonClicked(button, self._eq)
 
+        if text == 'N':
+            self._connectButtonClicked(button, self._invertNumber)
+
         if text in "+-/*^":
             self._connectButtonClicked(
                 button, self._makeSlot(self._configLeftOp, text)
             )
+
+    @Slot()
+    def _invertNumber(self):
+        displayText = self.display.text()
+
+        if not isValidNumber(displayText):
+            return
+
+        number = convertToNumber(displayText)
+        self.display.setText(str(number))
 
     @Slot()
     def _makeSlot(self, func, *args, **kwargs):
@@ -114,6 +127,7 @@ class ButtonsGrid(QGridLayout):
             return
 
         self.display.insert(text)
+        self.display.setFocus()
 
     @Slot()
     def _clear(self):
@@ -122,11 +136,13 @@ class ButtonsGrid(QGridLayout):
         self._op = None
         self.equation = self._equationInitValue
         self.display.clear()
+        self.display.setFocus()
 
     @Slot()
     def _configLeftOp(self, text):
         displayText = self.display.text()  # Devera ser meu número _left
         self.display.clear()  # Limpa o display
+        self.display.setFocus()
 
         # Operador clicado sem nenhum número configurado.
         if not isValidNumber(displayText) and self._left is None:
@@ -135,7 +151,7 @@ class ButtonsGrid(QGridLayout):
 
         # Se ouver apenas o número da esquerda aguardamos o número da direita.
         if self._left is None:
-            self._left = float(displayText)
+            self._left = convertToNumber(displayText)
 
         self._op = text
         self.equation = f"{self._left} {self._op} ??"
@@ -144,16 +160,16 @@ class ButtonsGrid(QGridLayout):
     def _eq(self):
         displayText = self.display.text()
 
-        if not isValidNumber(displayText):
+        if not isValidNumber(displayText) or self._left is None:
             self._showError("Você não digitou o restante da conta")
             return
 
-        self._right = float(displayText)
+        self._right = convertToNumber(displayText)
         self.equation = f"{self._left} {self._op} {self._right}"
         result = "error"
 
         try:
-            if "^" in self.equation and isinstance(self._left, float):
+            if "^" in self.equation and isinstance(self._left, (float, int)):
                 result = math.pow(self._left, self._right)
             else:
                 result = eval(self.equation)
@@ -166,9 +182,15 @@ class ButtonsGrid(QGridLayout):
         self.info.setText(f"{self.equation} = {result}")
         self._left = result
         self._right = None
+        self.display.setFocus()
 
         if result == "error":
             self._left = None
+
+    @Slot()
+    def _backspace(self):
+        self.display.backspace()
+        self.display.setFocus()
 
     def _makeDialog(self, text):
         msgBox = self.window.makeMsgBox()
@@ -179,6 +201,7 @@ class ButtonsGrid(QGridLayout):
         msgBox = self._makeDialog(text)
         msgBox.setIcon(msgBox.Icon.Critical)
         msgBox.exec()
+        self.display.setFocus()
 
     def _showInfo(self, text):
         msgBox = self._makeDialog(text)
