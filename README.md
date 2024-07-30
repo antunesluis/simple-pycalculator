@@ -4,6 +4,10 @@
 
 This project implements a calculator using PySide6. The calculator features a user-friendly graphical interface and supports basic operations, such as addition, subtraction, multiplication, division, exponentiation, and number inversion.
 
+## Backpropagation Interface
+
+![Calculator Interface](https://github.com/antunesluis/simple-pycalculator/blob/main/calculator.png)
+
 ## Dependencies
 
 - PySide6
