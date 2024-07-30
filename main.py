@@ -9,17 +9,17 @@ from widgets.styles import setupTheme
 from widgets.buttons import ButtonsGrid
 
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import (QApplication)
+from PySide6.QtWidgets import QApplication
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Cria a aplicação
     app = QApplication(sys.argv)
-    setupTheme()
+    setupTheme(app)
     window = MainWindow()
 
     # Info
-    info = Info('Sua conta')
+    info = Info("Sua conta")
     window.addWidgetToVLayout(info)
 
     # Define o ícone

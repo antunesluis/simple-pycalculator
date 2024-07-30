@@ -27,8 +27,8 @@ class Button(QPushButton):
 
 class ButtonsGrid(QGridLayout):
     def __init__(
-            self, display: "Display", info: "Info", window: "MainWindow",
-            *args, **kwargs):
+        self, display: "Display", info: "Info", window: "MainWindow", *args, **kwargs
+    ):
         super().__init__(*args, **kwargs)
 
         self._gridMask = [
@@ -93,13 +93,11 @@ class ButtonsGrid(QGridLayout):
         if text == "=":
             self._connectButtonClicked(button, self._eq)
 
-        if text == 'N':
+        if text == "N":
             self._connectButtonClicked(button, self._invertNumber)
 
         if text in "+-/*^":
-            self._connectButtonClicked(
-                button, self._makeSlot(self._configLeftOp, text)
-            )
+            self._connectButtonClicked(button, self._makeSlot(self._configLeftOp, text))
 
     @Slot()
     def _invertNumber(self):
@@ -207,3 +205,4 @@ class ButtonsGrid(QGridLayout):
         msgBox = self._makeDialog(text)
         msgBox.setIcon(msgBox.Icon.Information)
         msgBox.exec()
+
